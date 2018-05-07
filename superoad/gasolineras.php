@@ -17,83 +17,11 @@
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 16,
-          center: new google.maps.LatLng(-33.91722, 151.23064),
+          center: new google.maps.LatLng(4.6979695, -74.0881957),
           mapTypeId: 'roadmap'
         });
 
-       var icons = {
-          parking: {
-            icon: 'img/estacion.png'
-          }
-        };
-
-        var features = [
-          {
-            position: new google.maps.LatLng(-33.91539, 151.22820),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91747, 151.22912),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91910, 151.22907),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91725, 151.23011),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91872, 151.23089),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91784, 151.23094),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91682, 151.23149),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91790, 151.23463),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91666, 151.23468),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.916988, 151.233640),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-            type: 'parking'
-          }, {
-            position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-            type: 'parking'
-          }
-        ];
-
-        // Create markers.
-        features.forEach(function(feature) {
-          var marker = new google.maps.Marker({
-            position: feature.position,
-            icon: icons[feature.type].icon,
-            map: map
-          });
-        });
-		
+           cercanos();
       }
 	  
 	  function crearMarcador(place)
@@ -102,10 +30,12 @@
 		var infoWindow = new google.maps.InfoWindow({map: map});
 		var marker = new google.maps.Marker({
 			map: map,
-			position: place.geometry.location
+			position: place.geometry.location,
+			icon: 'img/estacion.png'
 		});		   
            infoWindow.setPosition(place.geometry.location);
-           infoWindow.setContent('$:'+12800);
+		   var precio=Math.floor((Math.random() * 2500) + 10000);
+           infoWindow.setContent('$:'+precio);
             map.setCenter(place.geometry.location);
 
 		// Asignamos el evento click del marcador
@@ -117,8 +47,8 @@
 	}		
 	
 	function cercanos(pos)
-	{
-			var myLatlng=pos;
+	{			var myLatlng=new google.maps.LatLng(4.6979695, -74.0881957);
+			//var myLatlng=pos;
 			//var tipo='cafe';
 			// Creamos el infowindow
 			var infowindow = new google.maps.InfoWindow();
@@ -126,9 +56,8 @@
 			// Especificamos la localización, el radio y el tipo de lugares que queremos obtener
 			var request = {
 			location: myLatlng,
-			radius: 200,
-			types: ['cafe']
-			
+			radius: 400,
+			types: ['gas']	
 			};
 
 			// Creamos el servicio PlaceService y enviamos la petición.
@@ -154,51 +83,20 @@
  <header>
 	<table align="center">
   <tr>
-  <td rowspan="5"><img src="logo.jpg" width="280px"; height="150px" alt="logo" /></td>
+  <td rowspan="5"><img src="logo.jpg" width="280px"; height="150px" alt="logo" style="margin-left: -300px;" /></td>
   <td>La <font color=red><B>---</B></font> Indica el Trafico.</td>
   </tr>
     <form name="form1">
-		<td>Direccion Origen:</td><td><input type="text" id="dir" name="dir" size="30" maxlength="50" style="border-radius: 12px;"></td>
-		<td><input type="button" onclick="getGeo()" value="Ubícame" class="btn1" /></td>
+		<td><button class="btn1"><a href="index.php">Volver</button></td>
 		<th></th>
 		<!-- <td><input type="button" onclick="agregarOrigen()" value="Ubicar en el Mapa" hidden /> -->
 	</form>
 	</td>
 	<tr>
-	
-    <td>Direccion Destino:</td><td><input type="text" name="ciudad" id="ciudad" size="30" maxlength="50" style="border-radius: 12px;"/></td>
-	<!-- Lat y Long Origen xo, yo-->
-	<td><button onclick="agregarCiudad()" class="btn1">Ubicar</button></td>
-	</tr>
-	<tr>
-	<td><font color="blue">Distancia:</font></td><td><span id="total"></span></td>
-	</tr>
-	<tr>
-	<td><font color="blue">Tiempo Recorrido:</font></td><td><span id="total"></span></td>
-	<td><input type="text" name="distancia" id="distancia" size="50" maxlength="50" hidden />
-	<input onclick="ruta();" type="button" value="Ruta" class="btn"></td> 
-	<td><input onclick="trafico();" type="button" value="Tráfico" class="btn"></td> 
-	<tr>
-	<td colspan="2">Estacion<input type="checkbox" name="gas" id="gas"></td>
-	
+		
 	<!-- <td colspan="2"><input onclick="misRutas();" type="button" value="mis Rutas" class="btn1"  /></td> -->
 	
 	</tr>
-	<tr>
-	
-	
-	
-	<td><input type="text" name="xo" id="xo"  size="10" value="0"  hidden /></td>
-	<td><input type="text" name="yo" id="yo"  size="10" value="0"  hidden /></td>
-	</tr>
-	<tr> 
-    <td><input type="text" name="dirO" id="dirO" size="30"  hidden /></td>
-	<td><input type="text" name="dirD" id="dirD" size="30"  hidden /></td>
-	</tr>
-	<tr>
-	<td><input type="text" name="x" id="x" size="10" maxlength="30" value="0" hidden /></td>
-    <td><input type="text" name="y" id="y" size="10" maxlength="30" value="0" hidden /></td>
-    </tr> 
     </table>
       
 	<!-- Lat y Long destino -->
